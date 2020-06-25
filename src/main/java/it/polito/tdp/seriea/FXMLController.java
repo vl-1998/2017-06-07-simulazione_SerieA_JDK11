@@ -3,6 +3,7 @@ package it.polito.tdp.seriea;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.seriea.model.ClassificaFinale;
 import it.polito.tdp.seriea.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,7 +21,7 @@ public class FXMLController {
     private URL location;
 
     @FXML
-    private ChoiceBox<?> boxSeason;
+    private ChoiceBox<Integer> boxSeason;
 
     @FXML
     private ChoiceBox<?> boxTeam;
@@ -30,7 +31,22 @@ public class FXMLController {
 
     @FXML
     void handleCarica(ActionEvent event) {
+    	txtResult.clear();
+    	
+    	Integer season = boxSeason.getValue();
+    	if (season == null) {
+    		txtResult.appendText("Inserire una stagione!");
+    		return ;
+    	}
+    	
+    	this.model.creaGrafo(season);
+    	txtResult.appendText("Grafo creato!"+"\n");
+    	txtResult.appendText("#Vertici: "+this.model.getVertex().size()+" #Archi: "+this.model.getEdge().size()+"\n\n");
 
+    	txtResult.appendText("Classifica finale:"+"\n");
+    	for (ClassificaFinale cf : this.model.classificaFinale()) {
+    		txtResult.appendText(cf.toString()+"\n");
+    	}
     }
 
     @FXML
@@ -48,5 +64,6 @@ public class FXMLController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		this.boxSeason.getItems().addAll(this.model.stagioni());
 	}
 }
