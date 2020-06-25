@@ -5,8 +5,10 @@ import java.util.ResourceBundle;
 
 import it.polito.tdp.seriea.model.ClassificaFinale;
 import it.polito.tdp.seriea.model.Model;
+import it.polito.tdp.seriea.model.Coppia;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 
@@ -24,7 +26,13 @@ public class FXMLController {
     private ChoiceBox<Integer> boxSeason;
 
     @FXML
-    private ChoiceBox<?> boxTeam;
+    private ChoiceBox<String> boxTeam;
+    
+    @FXML
+    private Button btnCarica;
+    
+    @FXML
+    private Button btnDomino;
 
     @FXML
     private TextArea txtResult;
@@ -40,6 +48,8 @@ public class FXMLController {
     	}
     	
     	this.model.creaGrafo(season);
+    	boxTeam.getItems().clear();
+    	boxTeam.getItems().addAll(this.model.getVertex());
     	txtResult.appendText("Grafo creato!"+"\n");
     	txtResult.appendText("#Vertici: "+this.model.getVertex().size()+" #Archi: "+this.model.getEdge().size()+"\n\n");
 
@@ -51,7 +61,17 @@ public class FXMLController {
 
     @FXML
     void handleDomino(ActionEvent event) {
-
+    	txtResult.clear();
+    	String squadra = boxTeam.getValue();
+    	
+    	if (squadra == null) {
+    		txtResult.appendText("Selezionare una squadra!");
+    		return;
+    	}
+    	
+    	for (Coppia c : this.model.calcolaPercorso(squadra)) {
+    		txtResult.appendText(c.toString()+"\n");
+    	}
     }
 
     @FXML
@@ -59,7 +79,8 @@ public class FXMLController {
         assert boxSeason != null : "fx:id=\"boxSeason\" was not injected: check your FXML file 'SerieA.fxml'.";
         assert boxTeam != null : "fx:id=\"boxTeam\" was not injected: check your FXML file 'SerieA.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'SerieA.fxml'.";
-
+        assert btnCarica != null : "fx:id=\"btnCarica\" was not injected: check your FXML file 'SerieA.fxml'.";
+        assert btnDomino != null : "fx:id=\"btnDomino\" was not injected: check your FXML file 'SerieA.fxml'.";
     }
 
 	public void setModel(Model model) {
